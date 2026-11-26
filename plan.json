@@ -1,0 +1,19 @@
+{
+  "step": "P-L4-002",
+  "prior_exposure": "The prior public reports and some comparator names were already known. This plan fixes the new score before calculating any prefix alignment. Names and radial loci come from already documented editions.",
+  "voynich": "The 28 radial loci f69v.4–31, in Zandbergen–Landini clockwise locus order. Use ZL and Takahashi as paired primary transcriptions. Keep each locus as one label, segment each written word separately with eva-basic, then concatenate its units. Exclude an uncertain label from the prefix score without moving its slot.",
+  "sources": [
+    "Anklesaria Greater Bundahishn II.2",
+    "Ragep et al. al-Muiniyya II.3[11] Arabic names in scholarly transcription",
+    "Sela et al. Henry Bate Pal.lat.1407 §5.2 table, first name per numbered row"
+  ],
+  "threshold": "Primary score is the Pearson association across the 378 unordered pairs of sector positions between their initial runs of shared symbols in each list. Score prefix depth beyond the first unit as max(0, min(4, prefix_length) - 1), so a first-unit match alone contributes zero. Skip any pair with an uncertain Voynich label. An alignment with zero variance is uninformative.",
+  "alignments": "Primary maximum over 28 rotations and both directions. Secondary scan-cue sensitivity uses clockwise starts f69v.8, f69v.9 and f69v.10 fixed by P-L4-025. It is exploratory because a ring gap need not establish the beginning of the radial roster.",
+  "nulls": "Use 3,999 uniform whole-label permutations separately in the named list and the Voynich list. Exchange only labels of equal normalized length and keep undefined labels at their observed slots. Retain the same set of alignments for observed and shuffled scores. Primary combined p is the larger of the two permutation p-values. Apply Holm correction across the three sources and two paired transcriptions. Show both single-null probabilities and report three-start sensitivity separately.",
+  "historical_normalization": "Use the spelling in each named source, join multiword labels without spaces, casefold, remove accent marks, and retain alphabetic characters including written ʾ and ʿ. For the scholarly Arabic romanization, collapse th, dh, kh, sh and gh to single units. Keep prefixes, connectors and first-name editorial restorations as printed. No stripping or substitution optimized from EVA readings.",
+  "targeted_check": "Separately test an intact shared-head diagnostic with the three fixed clockwise starts: al-Muiniyya positions 22–25 (Saʿd), Henry Bate table positions 22–23 (Sade), and Anklesaria positions 25 and 28 (Kaht). Record the initial two EVA units of each required locus. This direct necessity only applies to a consistent prefix-preserving encoding of those particular names.",
+  "synthetic_check": "Circularly rotate/reverse a bijective relabeling of every historical list. Re-run the score at 0 percent and 2 percent independent symbol replacement with eight seeds per list and 999 null permutations per side. This checks sensitivity in an idealized prefix-preserving symbolic encoding.",
+  "seed": 690202,
+  "justi_audit": "Check separately whether Justi’s 1868 source cited by Herrmann gives an unambiguous complete ordered 28-vector in the print. No reconstruction or inserted missing label goes into the primary three-list comparison.",
+  "extra_sensitivity": "Before scoring, add a secondary full-rotation sensitivity that exchanges names only within joint classes of length and initial symbol. It preserves the earlier initial-equality result exactly. Report the number of distinct possible label assignments in each direction, including degenerate classes."
+}
