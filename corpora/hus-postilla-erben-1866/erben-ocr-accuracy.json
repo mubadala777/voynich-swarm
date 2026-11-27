@@ -1,0 +1,304 @@
+{
+  "source": "Erben 1866 page OCR and independent Tesseract, compared to scan manual readings.",
+  "sample": "Four fixed eight-line opening prose samples, 32 printed lines. P. 51 starts below glosses.",
+  "pages": {
+    "1": {
+      "body_accuracy": {
+        "nkp": {
+          "nfc_chars": {
+            "edits": 11,
+            "denominator": 470,
+            "error_rate": 0.023404255319148935
+          },
+          "nfc_words": {
+            "edits": 8,
+            "denominator": 82,
+            "error_rate": 0.0975609756097561
+          },
+          "project_normalized_chars": {
+            "edits": 2,
+            "denominator": 453,
+            "error_rate": 0.004415011037527594
+          },
+          "project_normalized_words": {
+            "edits": 2,
+            "denominator": 82,
+            "error_rate": 0.024390243902439025
+          },
+          "input_sha256": "0310992c6eb169548bdaa580e2e6da8f783fcfabd1dca88745643c0d16c49e17",
+          "input_line_span_1based_inclusive": [
+            3,
+            10
+          ]
+        },
+        "tesseract": {
+          "nfc_chars": {
+            "edits": 1,
+            "denominator": 470,
+            "error_rate": 0.002127659574468085
+          },
+          "nfc_words": {
+            "edits": 1,
+            "denominator": 82,
+            "error_rate": 0.012195121951219513
+          },
+          "project_normalized_chars": {
+            "edits": 0,
+            "denominator": 453,
+            "error_rate": 0.0
+          },
+          "project_normalized_words": {
+            "edits": 0,
+            "denominator": 82,
+            "error_rate": 0.0
+          },
+          "input_sha256": "2e2de73b6899378810979b01458e46b7cac72ba0c027167173345785625a4c36",
+          "input_line_span_1based_inclusive": [
+            5,
+            12
+          ]
+        }
+      },
+      "definite_excluded_words_by_category": {
+        "title_and_footer": 17,
+        "clear_marginal_ocr_words": 2
+      },
+      "all_raw_words": 269
+    },
+    "51": {
+      "body_accuracy": {
+        "nkp": {
+          "nfc_chars": {
+            "edits": 7,
+            "denominator": 484,
+            "error_rate": 0.014462809917355372
+          },
+          "nfc_words": {
+            "edits": 4,
+            "denominator": 88,
+            "error_rate": 0.045454545454545456
+          },
+          "project_normalized_chars": {
+            "edits": 1,
+            "denominator": 468,
+            "error_rate": 0.002136752136752137
+          },
+          "project_normalized_words": {
+            "edits": 1,
+            "denominator": 88,
+            "error_rate": 0.011363636363636364
+          },
+          "input_sha256": "1b4020d0112b976819c301e0e39509efc971f4d736930c4a5af9d0eb7ffeb56b",
+          "input_line_span_1based_inclusive": [
+            25,
+            32
+          ]
+        },
+        "tesseract": {
+          "nfc_chars": {
+            "edits": 1,
+            "denominator": 484,
+            "error_rate": 0.002066115702479339
+          },
+          "nfc_words": {
+            "edits": 1,
+            "denominator": 88,
+            "error_rate": 0.011363636363636364
+          },
+          "project_normalized_chars": {
+            "edits": 0,
+            "denominator": 468,
+            "error_rate": 0.0
+          },
+          "project_normalized_words": {
+            "edits": 0,
+            "denominator": 88,
+            "error_rate": 0.0
+          },
+          "input_sha256": "f98b38474955a86979836485edcd55c48e2ac6a6bfa9b640ca60b7a794be72b0",
+          "input_line_span_1based_inclusive": [
+            29,
+            36
+          ]
+        }
+      },
+      "definite_excluded_words_by_category": {
+        "running_head_and_signature": 6,
+        "numbered_glosses": 94
+      },
+      "all_raw_words": 380
+    },
+    "221": {
+      "body_accuracy": {
+        "nkp": {
+          "nfc_chars": {
+            "edits": 13,
+            "denominator": 478,
+            "error_rate": 0.027196652719665274
+          },
+          "nfc_words": {
+            "edits": 9,
+            "denominator": 88,
+            "error_rate": 0.10227272727272728
+          },
+          "project_normalized_chars": {
+            "edits": 4,
+            "denominator": 461,
+            "error_rate": 0.008676789587852495
+          },
+          "project_normalized_words": {
+            "edits": 4,
+            "denominator": 88,
+            "error_rate": 0.045454545454545456
+          },
+          "input_sha256": "0af5b3adcf4460ff29ca6a0ac401da0a4dfaac21deafd13dece9096f196e3531",
+          "input_line_span_1based_inclusive": [
+            2,
+            9
+          ]
+        },
+        "tesseract": {
+          "nfc_chars": {
+            "edits": 63,
+            "denominator": 478,
+            "error_rate": 0.13179916317991633
+          },
+          "nfc_words": {
+            "edits": 14,
+            "denominator": 88,
+            "error_rate": 0.1590909090909091
+          },
+          "project_normalized_chars": {
+            "edits": 60,
+            "denominator": 461,
+            "error_rate": 0.1301518438177874
+          },
+          "project_normalized_words": {
+            "edits": 13,
+            "denominator": 88,
+            "error_rate": 0.14772727272727273
+          },
+          "input_sha256": "ca6a0e69bb71f36f6d82183e97a93be519a278c59983c1a339eff32d463fa36b",
+          "input_line_span_1based_inclusive": [
+            3,
+            10
+          ]
+        }
+      },
+      "definite_excluded_words_by_category": {
+        "running_head": 5,
+        "clear_marginal_ocr_words": 3
+      },
+      "all_raw_words": 398
+    },
+    "425": {
+      "body_accuracy": {
+        "nkp": {
+          "nfc_chars": {
+            "edits": 22,
+            "denominator": 475,
+            "error_rate": 0.04631578947368421
+          },
+          "nfc_words": {
+            "edits": 15,
+            "denominator": 82,
+            "error_rate": 0.18292682926829268
+          },
+          "project_normalized_chars": {
+            "edits": 14,
+            "denominator": 463,
+            "error_rate": 0.03023758099352052
+          },
+          "project_normalized_words": {
+            "edits": 13,
+            "denominator": 82,
+            "error_rate": 0.15853658536585366
+          },
+          "input_sha256": "493cbb5e6761f1c2ca138aaf698e239d75770fe9dbff0972bdc8c716bde36e64",
+          "input_line_span_1based_inclusive": [
+            2,
+            9
+          ]
+        },
+        "tesseract": {
+          "nfc_chars": {
+            "edits": 4,
+            "denominator": 475,
+            "error_rate": 0.008421052631578947
+          },
+          "nfc_words": {
+            "edits": 4,
+            "denominator": 82,
+            "error_rate": 0.04878048780487805
+          },
+          "project_normalized_chars": {
+            "edits": 1,
+            "denominator": 463,
+            "error_rate": 0.0021598272138228943
+          },
+          "project_normalized_words": {
+            "edits": 1,
+            "denominator": 82,
+            "error_rate": 0.012195121951219513
+          },
+          "input_sha256": "40100f5b033c415237c82b79db171ae97018d3b68bc6cd0867675e85bd2e553a",
+          "input_line_span_1based_inclusive": [
+            3,
+            10
+          ]
+        }
+      },
+      "definite_excluded_words_by_category": {
+        "running_head": 3
+      },
+      "all_raw_words": 380
+    }
+  },
+  "pooled_body": {
+    "nkp": {
+      "nfc_chars": {
+        "edits": 53,
+        "denominator": 1907,
+        "error_rate": 0.02779234399580493
+      },
+      "nfc_words": {
+        "edits": 36,
+        "denominator": 340,
+        "error_rate": 0.10588235294117647
+      },
+      "project_normalized_chars": {
+        "edits": 21,
+        "denominator": 1845,
+        "error_rate": 0.011382113821138212
+      },
+      "project_normalized_words": {
+        "edits": 20,
+        "denominator": 340,
+        "error_rate": 0.058823529411764705
+      }
+    },
+    "tesseract": {
+      "nfc_chars": {
+        "edits": 69,
+        "denominator": 1907,
+        "error_rate": 0.03618248557944415
+      },
+      "nfc_words": {
+        "edits": 20,
+        "denominator": 340,
+        "error_rate": 0.058823529411764705
+      },
+      "project_normalized_chars": {
+        "edits": 61,
+        "denominator": 1845,
+        "error_rate": 0.033062330623306234
+      },
+      "project_normalized_words": {
+        "edits": 14,
+        "denominator": 340,
+        "error_rate": 0.041176470588235294
+      }
+    }
+  },
+  "layout_note": "Named excluded material is a conservative lower bound. It excludes printed bracketed insertions and marginal debris with unclear OCR boundaries. Structural headings and the bold scriptural quotation on p. 51 were not counted as contamination."
+}
