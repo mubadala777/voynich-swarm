@@ -91,9 +91,10 @@ statistics:
                                                            This is a pooled contrast: page-specific composition can
                                                            create a difference even with no within-page difference.
   {"picture_label": {"test": T, "min_objects": n}}         labels against AGREED picture annotations (registry type picture;
-                                                           one annotation per folio, the best-agreeing). An object counts when
-                                                           its "label" is a label line (unit L) on the scored pages; its label
-                                                           is that line's words. T is
+                                                           one independent pair per folio, the best-agreeing). An object counts
+                                                           when both seats assigned the same explicit locus to an independently
+                                                           matched physical position and that locus is a label line (unit L)
+                                                           on the scored pages. T is
        same_object_label    pairs of objects on different folios that look alike (same kind, and at least 80% of at
                             least two shared features equal) have labels identical or one glyph apart, minus the
                             same rate over all other cross-folio pairs
@@ -101,12 +102,6 @@ statistics:
                             share a first or last glyph pair (eva-basic), minus the rate for pairs sharing none
        label_in_page_text   share of labels with a word (3+ glyphs) in their own page's running text, minus the
                             mean share for the other scored pages' running text
-                            Objects with no "label" but a ring (outer | middle | inner) and an angle
-                            ("angle_deg_clockwise_from_top", or "clock_position" 1-12) are joined to the label
-                            line in that ring nearest their angle, using the clock positions ZL3b records on
-                            circular pages (<!hh:mm> comments), within 20 degrees; a line goes to the closest
-                            object only. Rings are the label runs between circular text lines, outermost first;
-                            a run before the first circular line (figures outside the circle) is not a ring.
                             Layout fields (ring, order, angle, clock, position, label, note, count, group) are not
                             looks and are ignored. n (default 20, at least 10) labelled objects are required, and 5
                             pairs in each group compared; fewer is undefined (refused). Test it against
@@ -774,17 +769,23 @@ PICTURE_TESTS = {"same_object_label", "feature_label_share", "label_in_page_text
 PICTURES = None          # {folio: [object, ...]}; None reads AGREED annotations from the record (tests set it)
 MIN_PICTURE_PAIRS = 5
 _PICTURE_CACHE = None
+_VERIFIED_PICTURE_CACHE = None
 _FEATURE_SKIP = ("label", "order", "angle", "clock", "position", "note", "count", "ring", "group")   # layout, not looks
 
 
-def pictures():
-    """Select the best-agreeing annotation per folio, using explicit label coverage to break ties."""
-    global _PICTURE_CACHE
+def pictures(*, verify_labels=False):
+    """Select one annotation per folio, optionally requiring corroborated labels."""
+    global _PICTURE_CACHE, _VERIFIED_PICTURE_CACHE
     if PICTURES is not None:
         return PICTURES
+    from . import registry
+    if verify_labels:
+        if _VERIFIED_PICTURE_CACHE is None:
+            from .pictures import verified_picture_objects
+            _VERIFIED_PICTURE_CACHE = verified_picture_objects(registry.read("picture"))
+        return _VERIFIED_PICTURE_CACHE
     if _PICTURE_CACHE is not None:
         return _PICTURE_CACHE
-    from . import registry
     best = {}
     for i in registry.read("picture"):
         if i.get("verdict") != "AGREED":
@@ -878,14 +879,15 @@ def _joined_labels(folio, objs):
 
 
 def _picture_objects(all_toks):
-    """[(folio, kind, looks, label line id, label words)] for agreed objects whose label line is on these pages."""
+    """Verified picture-linked label lines on these pages, with kind, looks and label words."""
     lines = {}
     for t in all_toks:
         if t["unit"] == "L" and t.get("lid"):
             lines.setdefault(t["lid"], []).append(t["w"])
     out, seen = [], set()
-    for folio, objs in pictures().items():
-        joined = _joined_labels(folio, objs)
+    for folio, objs in pictures(verify_labels=True).items():
+        # Injected annotations can exercise the exploratory clock-based join.
+        joined = _joined_labels(folio, objs) if PICTURES is not None else {}
         for idx, o in enumerate(objs):
             if not isinstance(o, dict):
                 continue

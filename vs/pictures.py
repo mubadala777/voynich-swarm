@@ -13,6 +13,8 @@ of the comparison (a value it cannot place is not compared, never counted as a d
 Objects are paired by label locus where both annotations give one; otherwise within the same kind
 and ring, by nearest clock angle when both give one, else in list order.
 """
+from collections import Counter, defaultdict
+from itertools import combinations
 import re
 
 UNCLEAR = "unclear"
@@ -236,3 +238,137 @@ def agreement(a, b):
             tot += 1
             same += fo[k] == fq[k]
     return same / tot if tot else None
+
+
+# These legacy position descriptions include the frame, direction and size of the run.
+_RING_POSITION = re.compile(
+    r"(inner|middle|outer) ring, (\d{1,3}) of (\d{1,3}) clockwise from "
+    r"(?:the top|twelve o'clock)(?: \([^()]*\))?"
+)
+_ROW_POSITION = re.compile(
+    r"(upper pool|row above the wheel|above the wheel, outside the outer text ring), "
+    r"(\d{1,3}) of (\d{1,3}) from (?:the )?left"
+)
+
+
+def _ordinal_position(obj):
+    position = str((obj.get("features") or {}).get("position", "")).strip().lower().replace("’", "'")
+    match = _RING_POSITION.fullmatch(position) or _ROW_POSITION.fullmatch(position)
+    if match:
+        frame, ordinal, size = match.groups()
+        if 1 <= int(ordinal) <= int(size):
+            ring = _ring(obj)
+            if frame in ("inner", "middle", "outer") and ring and ring != frame:
+                return None
+            frame = "above the wheel" if "above the wheel" in frame else frame
+            return frame, int(ordinal), int(size)
+    return None
+
+
+def _nearest_unambiguous(candidates):
+    nearest = {}
+    for index, choices in candidates.items():
+        choices.sort()
+        if len(choices) == 1 or choices[0][0] != choices[1][0]:
+            nearest[index] = choices[0][1]
+    return nearest
+
+
+def _label_angle(obj):
+    features = obj.get("features") or {}
+    for key in ("angle_deg_clockwise_from_top", "bearing_clockwise_deg"):
+        angle = features.get(key)
+        if type(angle) in (int, float) and -360 <= angle <= 360:
+            return angle % 360
+    return None
+
+
+def _physical_pairs(a, b):
+    """Mutual unique matches using shared positions, without using labels or list order."""
+    def locate(objects):
+        return [(o.get("kind"), _ring(o), _label_angle(o), _ordinal_position(o)) for o in objects]
+
+    left, right = defaultdict(list), defaultdict(list)
+    positions_b = locate(b)
+    for i, (kind, ring, angle, ordinal) in enumerate(locate(a)):
+        for j, (other_kind, other_ring, other_angle, other_ordinal) in enumerate(positions_b):
+            if kind != other_kind:
+                continue
+            distance = None
+            if angle is not None and other_angle is not None:
+                delta = abs(angle - other_angle)
+                distance = min(delta, 360 - delta)
+            # An hour of clock position can encompass several figures in a crowded ring.
+            if distance is not None and distance > 8:
+                continue
+            if ordinal is not None and other_ordinal is not None:
+                if ordinal != other_ordinal:
+                    continue
+                priority = (0, 0)
+            elif ring and ring == other_ring and distance is not None:
+                priority = (1, distance)
+            else:
+                continue
+            left[i].append((priority, j))
+            right[j].append((priority, i))
+    nearest_b = _nearest_unambiguous(right)
+    return [(i, j) for i, j in _nearest_unambiguous(left).items() if nearest_b.get(j) == i]
+
+
+def label_agreement(a, b):
+    """Return corroborated object pairs and the number of explicit label comparisons.
+
+    A different or missing label is a disagreement for a physical pair. A label
+    with no physical partner counts against agreement too. Repeated loci are
+    ambiguous, including when both seats repeat the same locus.
+    """
+    folio = a.get("folio")
+    if (not isinstance(folio, str) or not folio or folio != b.get("folio")
+            or not a.get("canvas") or a["canvas"] != b.get("canvas")):
+        return [], 0
+
+    def labelled_objects(annotation):
+        objects = [o for o in annotation.get("objects") or [] if isinstance(o, dict)]
+        pattern = re.compile(rf"{re.escape(folio)}\.\d+")
+        labels = [o.get("label") for o in objects]
+        return objects, [label if isinstance(label, str) and pattern.fullmatch(label) else None
+                         for label in labels]
+
+    objects_a, labels_a = labelled_objects(a)
+    objects_b, labels_b = labelled_objects(b)
+    counts_a, counts_b = Counter(labels_a), Counter(labels_b)
+    compared = len(labels_a) + len(labels_b) - counts_a[None] - counts_b[None]
+    confirmed = []
+    for i, j in _physical_pairs(objects_a, objects_b):
+        first, second = labels_a[i], labels_b[j]
+        if first and second:
+            compared -= 1
+            if first == second and counts_a[first] == counts_b[second] == 1:
+                confirmed.append((objects_a[i], objects_b[j]))
+    return confirmed, compared
+
+
+def verified_picture_objects(records):
+    """Objects with corroborated label assignments from one qualifying pair per folio."""
+    by_folio = defaultdict(list)
+    for record in sorted(records, key=lambda record: record["id"]):
+        if record.get("verdict") == "AGREED":
+            by_folio[record["detail"]["folio"]].append(record)
+
+    best = {}
+    for folio, records in by_folio.items():
+        for a, b in combinations(records, 2):
+            first_seat = a["provenance"].get("seat", a["provenance"].get("added_by"))
+            second_seat = b["provenance"].get("seat", b["provenance"].get("added_by"))
+            if not first_seat or not second_seat or first_seat == second_seat:
+                continue
+            first, second = a["detail"], b["detail"]
+            appearance = min(agreement(first, second) or 0, agreement(second, first) or 0)
+            if appearance < 0.8:
+                continue
+            confirmed, compared = label_agreement(first, second)
+            if confirmed:
+                rank = (appearance, len(confirmed), len(confirmed) / compared)
+                if folio not in best or rank > best[folio][0]:
+                    best[folio] = (rank, [obj for obj, _ in confirmed])
+    return {folio: objects for folio, (_, objects) in best.items()}
